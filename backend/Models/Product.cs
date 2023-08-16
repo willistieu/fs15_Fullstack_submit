@@ -10,5 +10,7 @@ namespace backend.Models
         public string? Description { get; set; }
         public decimal Price { get; set; } = decimal.Zero;
         public string imgUrl { get; set; }
+        public string CreateBy { get; set; }
+        public string EditedBy { get; set; }
     }
 }

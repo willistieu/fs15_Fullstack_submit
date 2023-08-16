@@ -11,5 +11,7 @@ namespace backend.Models
         public string Password { get; set; }
         public string Username { get; set; }
         public string Role { get; set; }
+        public string CreateBy { get; set; }
+        public string EditedBy { get; set; }
     }
 }
