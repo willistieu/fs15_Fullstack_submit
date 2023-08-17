@@ -17,14 +17,13 @@ builder.Services.AddCors(options =>
     options.AddPolicy("MyAllowedOrigins",
         policy =>
         {
-            policy.WithOrigins("https://localhost:8081")
-                .AllowAnyHeader()
-                .AllowAnyMethod();
+            policy.AllowAnyOrigin()
+                .AllowAnyMethod()
+                .AllowAnyHeader();
         });
 });
 
 var app = builder.Build();
-app.UseCors("MyAllowedOrigins");
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -34,6 +33,9 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseCors("MyAllowedOrigins");
+
 
 ProductController.Map(app);
 UserController.Map(app);
