@@ -56,20 +56,14 @@ namespace backend.Controller
             {
                 if (await db.users.FindAsync(id) is User user)
                 {
-                    UserRepository.DeleteUser(id, db);
+                    db.users.Remove(user);
+                    await db.SaveChangesAsync();
+                    //UserRepository.DeleteUser(id, db);
                     return Results.NoContent();
                 }
                 return Results.NotFound();
             });
-            app.MapPut("/users/{id}", async (int id, User inputUser, FsDB db) =>
-            {
-                var _user = await db.users.FindAsync(id);
-
-                if (_user is null) return Results.NotFound();
-
-                var editedUser = UserRepository.PutAuser(id, inputUser, db);
-                return Results.Ok(editedUser);
-            });
+            
 
         }
     }

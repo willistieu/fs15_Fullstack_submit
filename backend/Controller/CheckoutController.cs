@@ -8,7 +8,8 @@ namespace backend.Controller
     {
         public static void Map(WebApplication app)
         {
-            app.MapGet("/checkout", (FsDB db) => {
+            app.MapGet("/checkout", (FsDB db) =>
+            {
                 try
                 {
                     List<Checkout> _checkout = CheckoutRepository.CheckoutList(db);
@@ -21,7 +22,8 @@ namespace backend.Controller
                     throw new Exception("An error is exist");
                 }
             });
-            app.MapGet("/checkout/{id}", (int id, FsDB db) => {
+            app.MapGet("/checkout/{id}", (int id, FsDB db) =>
+            {
                 try
                 {
                     Checkout? _checkout = CheckoutRepository.GetCheckoutById(id, db);
@@ -34,11 +36,14 @@ namespace backend.Controller
                     throw new Exception("An error is exist");
                 }
             });
-            app.MapPost("/checkout", (Checkout checkout, FsDB db) => {
+            app.MapPost("/checkout", async (Checkout checkout, FsDB db) =>
+            {
                 try
                 {
-                    CheckoutRepository.PostCheckOut(checkout, db);
-                    return Results.Created($"/users/{checkout.Id}", checkout);
+                    //CheckoutRepository.PostCheckOut(checkout, db);
+                    db.checkouts.Add(checkout);
+                    await db.SaveChangesAsync();
+                    return Results.Created($"/checkout/{checkout.Id}", checkout);
                 }
                 catch (Exception e)
                 {
@@ -46,10 +51,13 @@ namespace backend.Controller
                     throw new Exception("An error is exist");
                 }
             });
-            app.MapDelete("/checkout/{id}", async (int id, FsDB db) => {
+            app.MapDelete("/checkout/{id}", async (int id, FsDB db) =>
+            {
                 if (await db.checkouts.FindAsync(id) is Checkout checkout)
                 {
-                    CheckoutRepository.DeleteCheckout(id, db);
+                    db.checkouts.Remove(checkout); 
+                    await db.SaveChangesAsync();
+                    //CheckoutRepository.DeleteCheckout(id, db);
                     return Results.NoContent();
                 }
                 return Results.NotFound();

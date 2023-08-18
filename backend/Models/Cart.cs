@@ -9,6 +9,6 @@ namespace backend.Models
         public int ProductId { get; set; }
         public string ProductName { get; set; }
         public double Quantity { get; set; }
-        public int CheckoutId { get; set; }
+        public DateTime createdDate { get; set; } = DateTime.Now;
     }
 }

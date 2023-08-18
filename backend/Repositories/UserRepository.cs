@@ -51,6 +51,7 @@ namespace backend.Repositories
                 if (_user is not null)
                 {
                     db.users.Remove(_user);
+                    Console.WriteLine(_user);
                     db.SaveChangesAsync();
                 }
             }

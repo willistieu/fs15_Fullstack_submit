@@ -66,10 +66,10 @@ namespace backend.Controller
             {
                 if (await db.products.FindAsync(id) is Product product)
                 {
-                    //db.products.Remove(todo);
-                    //await db.SaveChangesAsync();
+                    db.products.Remove(product);
+                    await db.SaveChangesAsync();
 
-                    ProductRepository.DeleteProduct(id, db);
+                    //ProductRepository.DeleteProduct(id, db);
 
                     return Results.NoContent();
                 }
@@ -82,16 +82,16 @@ namespace backend.Controller
 
                 if (product is null) return Results.NotFound();
 
-                //product.Name = inputProduct.Name;
-                //product.Description = inputProduct.Description;
-                //product.Price = inputProduct.Price;
-                //product.imgUrl = inputProduct.imgUrl;
+                product.Name = inputProduct.Name;
+                product.Description = inputProduct.Description;
+                product.Price = inputProduct.Price;
+                product.imgUrl = inputProduct.imgUrl;
 
-                //await db.SaveChangesAsync();mmmmm  yu
+                await db.SaveChangesAsync();
 
-                ProductRepository.PutAproduct(id, inputProduct, db);
+                //ProductRepository.PutAproduct(id, inputProduct, db);
 
-                return Results.NoContent();
+                return Results.Created($"/products/{product.Id}", product);
             });
 
         }

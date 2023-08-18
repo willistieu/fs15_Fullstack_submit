@@ -22,7 +22,6 @@ export interface ICart {
   price: number;
   quantity: number;
   amount: number;
-  products: IItem[];
 }
 
 interface Iprops {

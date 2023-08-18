@@ -1,15 +1,32 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
 namespace backend.Migrations
 {
     /// <inheritdoc />
-    public partial class fs15database : Migration
+    public partial class fs15db2 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.CreateTable(
+                name: "carts",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ProductId = table.Column<int>(type: "int", nullable: false),
+                    ProductName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Quantity = table.Column<double>(type: "float", nullable: false),
+                    createdDate = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_carts", x => x.Id);
+                });
+
             migrationBuilder.CreateTable(
                 name: "checkouts",
                 columns: table => new
@@ -18,7 +35,8 @@ namespace backend.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     CustomerName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CustomerId = table.Column<int>(type: "int", nullable: false),
-                    Amount = table.Column<double>(type: "float", nullable: false)
+                    Amount = table.Column<double>(type: "float", nullable: false),
+                    createdDate = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -61,33 +79,6 @@ namespace backend.Migrations
                 {
                     table.PrimaryKey("PK_users", x => x.Id);
                 });
-
-            migrationBuilder.CreateTable(
-                name: "carts",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    ProductId = table.Column<int>(type: "int", nullable: false),
-                    ProductName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Quantity = table.Column<double>(type: "float", nullable: false),
-                    CheckoutId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_carts", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_carts_checkouts_CheckoutId",
-                        column: x => x.CheckoutId,
-                        principalTable: "checkouts",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateIndex(
-                name: "IX_carts_CheckoutId",
-                table: "carts",
-                column: "CheckoutId");
         }
 
         /// <inheritdoc />
@@ -97,13 +88,13 @@ namespace backend.Migrations
                 name: "carts");
 
             migrationBuilder.DropTable(
+                name: "checkouts");
+
+            migrationBuilder.DropTable(
                 name: "products");
 
             migrationBuilder.DropTable(
                 name: "users");
-
-            migrationBuilder.DropTable(
-                name: "checkouts");
         }
     }
 }

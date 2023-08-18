@@ -15,7 +15,6 @@ export const addItem = (cart: ICart[], product: IItem) => {
     price: product.price,
     quantity: 1,
     amount: product.price,
-    products: itemProduct,
   };
   const findItem = currentCart.find((c) => c.productId === product.id);
   if (!findItem) {
@@ -46,7 +45,6 @@ export const addCartItemToDb = async (item: ICart) => {
     id: 0,
     productId: item.productId,
     productName: item.name,
-    products: item.products,
     quantity: item.quantity,
   };
   const { data } = await dataInstance.post("carts", body);

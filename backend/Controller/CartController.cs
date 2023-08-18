@@ -8,7 +8,8 @@ namespace backend.Controller
     {
         public static void Map(WebApplication app)
         {
-            app.MapGet("/carts", (FsDB db) => {
+            app.MapGet("/carts", (FsDB db) =>
+            {
                 try
                 {
                     List<Cart> _cart = CartRepository.CartList(db);
@@ -21,7 +22,8 @@ namespace backend.Controller
                     throw new Exception("An error is exist");
                 }
             });
-            app.MapGet("/carts/{id}", (int id, FsDB db) => {
+            app.MapGet("/carts/{id}", (int id, FsDB db) =>
+            {
                 try
                 {
                     Cart? _cart = CartRepository.GetCart(id, db);
@@ -31,14 +33,15 @@ namespace backend.Controller
                 catch (Exception e)
                 {
                     Console.WriteLine(e);
-                    throw new Exception($"An error is exist");
+                    throw new Exception("An error is exist");
                 }
             });
-            app.MapPost("/carts",async (Cart cart, FsDB db) => {
+            app.MapPost("/carts", async (Cart cart, FsDB db) =>
+            {
                 try
                 {
                     //CartRepository.PostAcart(cart, db);
-                    
+
                     db.carts.Add(cart);
                     await db.SaveChangesAsync();
                     return Results.Created($"/carts/{cart.Id}", cart);
@@ -46,13 +49,16 @@ namespace backend.Controller
                 catch (Exception e)
                 {
                     Console.WriteLine(e);
-                    throw new Exception($"An error is exist");
+                    throw new Exception("An error is exist");
                 }
             });
-            app.MapDelete("/carts/{id}", async (int id, FsDB db) => {
+            app.MapDelete("/carts/{id}", async (int id, FsDB db) =>
+            {
                 if (await db.carts.FindAsync(id) is Cart cart)
                 {
-                    CartRepository.DeleteCart(id, db);
+                    db.carts.Remove(cart);
+                    await db.SaveChangesAsync();
+                    //CartRepository.DeleteCart(id, db);
                     return Results.NoContent();
                 }
                 return Results.NotFound();
