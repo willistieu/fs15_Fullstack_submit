@@ -14,8 +14,8 @@ namespace backend.Data
             //config primary key(User)
             modelBuilder.Entity<Product>().HasKey(p => p.Id);
             modelBuilder.Entity<User>().HasKey(u => u.Id);
-            modelBuilder.Entity<Cart>().HasMany<Product>(c => c.Products);
-            modelBuilder.Entity<Checkout>().HasMany<Cart>(c => c.OrderItems);
+            modelBuilder.Entity<Cart>().HasKey(c => c.Id);
+            modelBuilder.Entity<Checkout>().HasKey(c => c.Id);
         }
 
         public DbSet<Product> products { get; set; }

@@ -37,11 +37,13 @@ namespace backend.Controller
                     throw new Exception("An error is exist");
                 }
             });
-            app.MapPost("/users", (User user, FsDB db) =>
+            app.MapPost("/users", async (User user, FsDB db) =>
             {
                 try
                 {
-                    UserRepository.PostAUser(user, db);
+                    //UserRepository.PostAUser(user, db);
+                    db.users.Add(user);
+                    await db.SaveChangesAsync();
                     return Results.Created($"/users/{user.Id}", user);
                 }
                 catch (Exception e)

@@ -34,10 +34,13 @@ namespace backend.Controller
                     throw new Exception($"An error is exist");
                 }
             });
-            app.MapPost("/carts", (Cart cart, FsDB db) => {
+            app.MapPost("/carts",async (Cart cart, FsDB db) => {
                 try
                 {
-                    CartRepository.PostAcart(cart, db);
+                    //CartRepository.PostAcart(cart, db);
+                    
+                    db.carts.Add(cart);
+                    await db.SaveChangesAsync();
                     return Results.Created($"/carts/{cart.Id}", cart);
                 }
                 catch (Exception e)

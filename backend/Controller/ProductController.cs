@@ -1,6 +1,8 @@
-﻿using backend.Data;
+﻿using Azure.Core;
+using backend.Data;
 using backend.Models;
 using backend.Repositories;
+using Microsoft.AspNetCore.Mvc;
 
 namespace backend.Controller
 {
@@ -8,23 +10,25 @@ namespace backend.Controller
     {
         public static void Map(WebApplication app)
         {
-            app.MapGet("/products", (FsDB db) =>
-            {
-                try
-                {
-                    List<Product> _products = ProductRepository.ProductList(db);
-                    if (_products is null) { Results.NotFound(); }
-                    return Results.Ok(_products);
-                }
-                catch (Exception e)
-                {
+            app.MapGet("/products", ([FromQuery(Name = "offset")] int offset, [FromQuery(Name = "limit")] int limit, FsDB db) =>
+           {
+               try
+               {
 
-                    Console.WriteLine(e);
-                    throw new Exception($"An error is exist");
-                }
+                   List<Product> _products = ProductRepository.ProductList(db, offset, limit);
+                   if (_products is null) { Results.NotFound(); }
+
+                   return Results.Ok(_products);
+               }
+               catch (Exception e)
+               {
+
+                   Console.WriteLine(e);
+                   throw new Exception("An error is exist");
+               }
 
 
-            });
+           });
             app.MapGet("/products/{id}", (int id, FsDB db) =>
             {
                 try

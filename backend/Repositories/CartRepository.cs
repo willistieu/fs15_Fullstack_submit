@@ -29,7 +29,7 @@ namespace backend.Repositories
             {
                 if (cart.Id <= 0)
                 {
-                    db.carts.AddAsync(cart);
+                    db.carts.Add(cart);
                     db.SaveChangesAsync();
                 }
             }

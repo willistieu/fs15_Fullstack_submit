@@ -1,29 +1,37 @@
-import { ExpandLess, MoreHoriz } from "@mui/icons-material";
 import {
+  AddShoppingCart,
+  ExpandLess,
+  MoreHoriz,
+  RemoveShoppingCart,
+} from "@mui/icons-material";
+import {
+  Button,
   Card,
+  CardActions,
   CardContent,
-  CardHeader,
   CardMedia,
   IconButton,
   Typography,
 } from "@mui/material";
+
 import React, { useState } from "react";
 
 export interface IItem {
-  id: Number;
-  name: String;
-  description: String;
-  price: Number;
-  imgUrl: String;
-  createBy: String;
-  editedBy: String;
+  id: number;
+  name: string;
+  description: string;
+  price: number;
+  imgUrl: string;
+  createBy: string;
+  editedBy: string;
+  addToCart: () => void;
+  removeFromCart: () => void;
 }
 
 const ProductItem = (item: IItem) => {
   const [desExpand, setDesExpand] = useState(false);
   return (
     <Card variant="outlined" sx={{ maxWidth: 150 }}>
-      {/* <CardHeader title={item.name} /> */}
       <CardMedia
         component="img"
         height="150"
@@ -55,6 +63,20 @@ const ProductItem = (item: IItem) => {
           )}
         </Typography>
       </CardContent>
+      <CardActions
+        sx={{
+          display: "flex",
+          flexDirection: "row",
+          justifyContent: "space-between",
+        }}
+      >
+        <IconButton color="primary" onClick={item.addToCart}>
+          <AddShoppingCart />
+        </IconButton>
+        {/* <IconButton color="error" onClick={item.removeFromCart}>
+          <RemoveShoppingCart />
+        </IconButton> */}
+      </CardActions>
     </Card>
   );
 };

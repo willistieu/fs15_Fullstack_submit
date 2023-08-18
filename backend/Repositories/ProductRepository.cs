@@ -6,11 +6,13 @@ namespace backend.Repositories
 {
     public static class ProductRepository
     {
-        public static List<Product> ProductList(FsDB db)
+        public static List<Product> ProductList(FsDB db, int offset, int limit)
         {
 
             var _products = db.products;
-            return _products.ToList();
+            return _products
+                .Skip(offset).Take(limit).ToList();
+
 
         }
         public static Product? FindProductById(int id, FsDB db)
