@@ -9,6 +9,7 @@ namespace backend.Models
         public string CustomerName { get; set; }
         public int CustomerId { get; set; }
         public double Amount { get; set; }
+        public int cartId { get; set; }
         public DateTime createdDate { get; set; } = DateTime.Now;
     }
 }

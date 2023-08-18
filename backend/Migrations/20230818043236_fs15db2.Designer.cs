@@ -12,7 +12,7 @@ using backend.Data;
 namespace backend.Migrations
 {
     [DbContext(typeof(FsDB))]
-    [Migration("20230818020044_fs15db2")]
+    [Migration("20230818043236_fs15db2")]
     partial class fs15db2
     {
         /// <inheritdoc />
@@ -68,6 +68,9 @@ namespace backend.Migrations
                     b.Property<string>("CustomerName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("cartId")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("createdDate")
                         .HasColumnType("datetime2");

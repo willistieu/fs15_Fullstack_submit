@@ -66,6 +66,9 @@ namespace backend.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("cartId")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("createdDate")
                         .HasColumnType("datetime2");
 
