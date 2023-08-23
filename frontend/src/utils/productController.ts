@@ -18,6 +18,11 @@ export const fetchProductList = async (offset: number, limit: number) => {
   return data;
 };
 
+export const getProductLength = async () => {
+  const { data } = await dataInstance.get("product/length");
+  return data;
+};
+
 export const initLoadingProductList = async (offset: number, limit: number) => {
   const products = await fetchProductList(offset, limit);
   return products;

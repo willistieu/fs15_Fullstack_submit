@@ -1,6 +1,7 @@
 import { Box, Button, List, ListItem, Typography, Drawer } from "@mui/material";
-import { Home, Info } from "@mui/icons-material";
+import { Category, Home, Info } from "@mui/icons-material";
 import React from "react";
+import { Link } from "react-router-dom";
 
 interface props {
   anchor: "top" | "right" | "bottom" | "left";
@@ -10,8 +11,9 @@ interface props {
 
 const DrawerComponent = (drawerProps: props) => {
   const drawItems = [
-    { name: "Home", icon: <Home /> },
-    { name: "About", icon: <Info /> },
+    { name: "Home", icon: <Home />, value: "/" },
+    { name: "About", icon: <Info />, value: "/about" },
+    { name: "Admin", icon: <Category />, value: "/admin/product" },
   ];
   return (
     <Drawer
@@ -29,22 +31,25 @@ const DrawerComponent = (drawerProps: props) => {
           {drawItems.map((_text, index) => {
             return (
               <ListItem key={index}>
-                <Typography variant="body1">
-                  <Button
-                    variant="text"
-                    // color="primary"
-                    // color="success"
-                    size="small"
-                    startIcon={_text.icon}
-                    sx={{
-                      width: "9em",
-                      justifyContent: "left",
-                    }}
-                  >
-                    {_text.name}
-                  </Button>
-                </Typography>
+                <a href={_text.value}>
+                  <Typography variant="body1">
+                    <Button
+                      variant="text"
+                      // color="primary"
+                      // color="success"
+                      size="small"
+                      startIcon={_text.icon}
+                      sx={{
+                        width: "9em",
+                        justifyContent: "left",
+                      }}
+                    >
+                      {_text.name}
+                    </Button>
+                  </Typography>
+                </a>
               </ListItem>
+              // </Link>
             );
           })}
         </List>

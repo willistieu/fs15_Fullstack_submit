@@ -29,6 +29,11 @@ namespace backend.Controller
 
 
            });
+            app.MapGet("/product/length", (FsDB db) =>
+            {
+                int _productLength = ProductRepository.NumberOfProduct(db);
+                return Results.Ok(_productLength);
+            });
             app.MapGet("/products/{id}", (int id, FsDB db) =>
             {
                 try

@@ -21,6 +21,7 @@ import {
   createAProduct,
   deleteAProduct,
   fetchProductList,
+  getProductLength,
 } from "../utils/productController";
 import EditProduct from "../components/EditProduct";
 
@@ -37,11 +38,11 @@ const Products = () => {
     editedBy: "string",
   };
   const [productList, setProductList] = useState<IProduct[]>([]);
-  const [listLimit, setListLimit] = useState<number>(5);
+  const [listLimit, setListLimit] = useState(5);
   const [newProduct, setNewProduct] = useState<IProduct>(initNewProductState);
   const [currProduct, setCurrProduct] = useState<IProduct>(initNewProductState);
   const [showAddNewProduct, setShowAddNewProduct] = useState(false);
-
+  const [listLength, setListLength] = useState(0);
   const [modalopen, setmodalOpen] = useState(false);
   const handlemodalOpen = () => setmodalOpen(true);
   const handlemodalClose = () => setmodalOpen(false);
@@ -58,6 +59,11 @@ const Products = () => {
 
   useEffect(() => {
     fetchList();
+    getProductLength()
+      .then((result) => {
+        setListLength(result);
+      })
+      .catch((err) => {});
   }, []);
   return (
     <Box>
@@ -163,7 +169,11 @@ const Products = () => {
                     variant="outlined"
                     onChange={(e: Ievent) => {
                       let newP = newProduct;
-                      newP.imgUrl = e.target.value.toString();
+                      if (e.target.value.toString() === "") {
+                        newP.imgUrl = e.target.defaultValue.toString();
+                      } else {
+                        newP.imgUrl = e.target.value.toString();
+                      }
                       setNewProduct(newP);
                     }}
                   />
@@ -222,6 +232,7 @@ const Products = () => {
           }}
         >
           <IconButton
+            disabled={listLimit <= listLength ? false : true}
             onClick={async () => {
               let limit = listLimit;
               limit += 5;

@@ -15,6 +15,14 @@ namespace backend.Repositories
 
 
         }
+
+        public static int NumberOfProduct(FsDB db)
+        {
+            var _products = db.products;
+            
+            var _productlength = _products.ToList().Count();
+            return _productlength;
+        }
         public static Product? FindProductById(int id, FsDB db)
         {
             try
