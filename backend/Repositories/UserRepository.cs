@@ -11,6 +11,28 @@ namespace backend.Repositories
             var _users = db.users;
             return _users.ToList();
         }
+       
+        public static User? GetUserByUsername(String username, String password, FsDB db)
+        {
+
+            try
+            {
+                if (!string.IsNullOrEmpty(username) && !string.IsNullOrEmpty(password))
+                {
+                    User? _user = db.users.FirstOrDefault(u => u.Username == username);
+                    return _user;
+                }
+                return null;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw new Exception("An error is exist");
+            }
+
+        }
+
+
         public static User? GetUserById(int id, FsDB db)
         {
             try
@@ -61,7 +83,8 @@ namespace backend.Repositories
                 throw new Exception("An error is exist");
             }
         }
-        public static User? PutAuser(int id, User inputUser, FsDB db) {
+        public static User? PutAuser(int id, User inputUser, FsDB db)
+        {
             try
             {
                 User? _user = db.users.FirstOrDefault(u => u.Id == id);
