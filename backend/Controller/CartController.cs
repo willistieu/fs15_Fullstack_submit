@@ -1,6 +1,8 @@
 ﻿using backend.Data;
 using backend.Models;
 using backend.Repositories;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 
 namespace backend.Controller
 {
@@ -8,7 +10,9 @@ namespace backend.Controller
     {
         public static void Map(WebApplication app)
         {
-            app.MapGet("/carts", (FsDB db) =>
+            app.MapGet("/carts",
+                [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "topadmin, admin")]
+            ( FsDB db) =>
             {
                 try
                 {
@@ -22,7 +26,9 @@ namespace backend.Controller
                     throw new Exception("An error is exist");
                 }
             });
-            app.MapGet("/carts/{id}", (int id, FsDB db) =>
+            app.MapGet("/carts/{id}",
+                [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "topadmin, admin")]
+            ( int id, FsDB db) =>
             {
                 try
                 {
@@ -36,7 +42,9 @@ namespace backend.Controller
                     throw new Exception("An error is exist");
                 }
             });
-            app.MapPost("/carts", async (Cart cart, FsDB db) =>
+            app.MapPost("/carts",
+                [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+            async (Cart cart, FsDB db) =>
             {
                 try
                 {
@@ -52,7 +60,9 @@ namespace backend.Controller
                     throw new Exception("An error is exist");
                 }
             });
-            app.MapDelete("/carts/{id}", async (int id, FsDB db) =>
+            app.MapDelete("/carts/{id}",
+                [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "topadmin, admin")]
+            async (int id, FsDB db) =>
             {
                 if (await db.carts.FindAsync(id) is Cart cart)
                 {

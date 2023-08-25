@@ -59,7 +59,7 @@ namespace backend.Controller
             });
 
             app.MapPost("/products",
-            [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "admin")]
+            [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "admin, topadmin")]
             async ( Product product, FsDB db ) =>
             {
                 try
@@ -78,7 +78,7 @@ namespace backend.Controller
 
             });
             app.MapDelete("/products/{id}",
-            [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "admin")]
+            [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "admin, topadmin")]
             async ( int id, FsDB db ) =>
             {
                 if (await db.products.FindAsync(id) is Product product)
@@ -94,7 +94,7 @@ namespace backend.Controller
                 return Results.NotFound();
             });
             app.MapPut("/products/{id}",
-            [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "admin")]
+            [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "admin, topadmin")]
             async ( int id, Product inputProduct, FsDB db ) =>
             {
                 var product = await db.products.FindAsync(id);

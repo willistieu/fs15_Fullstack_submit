@@ -1,6 +1,8 @@
 ﻿using backend.Data;
 using backend.Models;
 using backend.Repositories;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 
 namespace backend.Controller
 {
@@ -8,7 +10,9 @@ namespace backend.Controller
     {
         public static void Map(WebApplication app)
         {
-            app.MapGet("/checkout", (FsDB db) =>
+            app.MapGet("/checkout",
+                [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "topadmin, admin")]
+            ( FsDB db) =>
             {
                 try
                 {
@@ -22,8 +26,11 @@ namespace backend.Controller
                     throw new Exception("An error is exist");
                 }
             });
-            app.MapGet("/checkout/{id}", (int id, FsDB db) =>
+            app.MapGet("/checkout/{id}",
+                [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+            ( int id, FsDB db) =>
             {
+
                 try
                 {
                     Checkout? _checkout = CheckoutRepository.GetCheckoutById(id, db);
@@ -36,8 +43,11 @@ namespace backend.Controller
                     throw new Exception("An error is exist");
                 }
             });
-            app.MapPost("/checkout", async (Checkout checkout, FsDB db) =>
+            app.MapPost("/checkout",
+                [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+            async (Checkout checkout, FsDB db) =>
             {
+
                 try
                 {
                     //CheckoutRepository.PostCheckOut(checkout, db);
@@ -51,7 +61,9 @@ namespace backend.Controller
                     throw new Exception("An error is exist");
                 }
             });
-            app.MapDelete("/checkout/{id}", async (int id, FsDB db) =>
+            app.MapDelete("/checkout/{id}",
+                [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "topadmin, admin")]
+            async (int id, FsDB db) =>
             {
                 if (await db.checkouts.FindAsync(id) is Checkout checkout)
                 {
