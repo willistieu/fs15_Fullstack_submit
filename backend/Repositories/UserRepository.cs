@@ -11,7 +11,7 @@ namespace backend.Repositories
             var _users = db.users;
             return _users.ToList();
         }
-       
+
         public static User? GetUserByUsername(String username, String password, FsDB db)
         {
 
@@ -19,8 +19,12 @@ namespace backend.Repositories
             {
                 if (!string.IsNullOrEmpty(username) && !string.IsNullOrEmpty(password))
                 {
-                    User? _user = db.users.FirstOrDefault(u => u.Username == username);
-                    return _user;
+                    User? _user = db.users.FirstOrDefault(u => u.Username.Equals(username) && u.Password.Equals(password));
+                    if (_user is not null)
+                    {
+                        return _user;
+                    }
+                   return null;
                 }
                 return null;
             }

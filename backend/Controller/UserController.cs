@@ -1,18 +1,28 @@
-﻿using backend.Data;
+﻿
+using backend.Data;
 using backend.Models;
 using backend.Repositories;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 
 
 namespace backend.Controller
 {
     public static class UserController
     {
-        public static void Map(WebApplication app)
+        public static void Map ( WebApplication app )
         {
-            app.MapGet("/users", (FsDB db) =>
+            app.MapGet("/users",
+            [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "topadmi, admin")]
+            ( FsDB db ) =>
             {
                 try
                 {
+                    HttpRequestMessage re = new HttpRequestMessage();
+
+                    var auth = re.Headers.Authorization;
+                     Console.WriteLine(auth);
+
                     List<User> _users = UserRepository.UserList(db);
                     if (_users is null) Results.NotFound();
                     return Results.Ok(_users);
@@ -23,7 +33,9 @@ namespace backend.Controller
                     throw new Exception("An error is exist");
                 }
             });
-            app.MapGet("/users/{id}", (int id, FsDB db) =>
+            app.MapGet("/users/{id}",
+            [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "admin, top")]
+            ( int id, FsDB db ) =>
             {
                 try
                 {
@@ -37,12 +49,18 @@ namespace backend.Controller
                     throw new Exception("An error is exist");
                 }
             });
-            app.MapPost("/users", async (User user, FsDB db) =>
+
+            app.MapPost("/users",
+            async ( User user, FsDB db ) =>
             {
                 try
                 {
-                    //UserRepository.PostAUser(user, db);
-                    db.users.Add(user);
+                    if (user is null) return Results.NoContent();
+                    
+                    User _user = user;
+                    _user.Role = "customer";
+
+                    db.users.Add(_user);
                     await db.SaveChangesAsync();
                     return Results.Created($"/users/{user.Id}", user);
                 }
@@ -52,7 +70,10 @@ namespace backend.Controller
                     throw new Exception("An error is exist");
                 }
             });
-            app.MapDelete("/users/{id}", async (int id, FsDB db) =>
+            
+            app.MapDelete("/users/{id}",
+             [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "admin")]
+            async ( int id, FsDB db ) =>
             {
                 if (await db.users.FindAsync(id) is User user)
                 {
@@ -63,7 +84,20 @@ namespace backend.Controller
                 }
                 return Results.NotFound();
             });
-            
+            app.MapPut("/users/{id}",
+            [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "admin")]
+            async (int id, User inputUser, FsDB db) => {
+                var user = await db.users.FindAsync(id);
+                if (user is null) return Results.NotFound();
+
+                user.Name = inputUser.Name;
+                user.Username = inputUser.Username;
+                user.Password = inputUser.Password;
+                user.Email = inputUser.Email;
+
+                await db.SaveChangesAsync();
+                return Results.Created($"/users/{user.Id}", user);
+            });
 
         }
     }

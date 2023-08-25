@@ -2,39 +2,47 @@
 using backend.Data;
 using backend.Models;
 using backend.Repositories;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace backend.Controller
 {
     public static class ProductController
     {
-        public static void Map(WebApplication app)
+        public static void Map ( WebApplication app )
         {
-            app.MapGet("/products", ([FromQuery(Name = "offset")] int offset, [FromQuery(Name = "limit")] int limit, FsDB db) =>
-           {
-               try
-               {
-
-                   List<Product> _products = ProductRepository.ProductList(db, offset, limit);
-                   if (_products is null) { Results.NotFound(); }
-
-                   return Results.Ok(_products);
-               }
-               catch (Exception e)
-               {
-
-                   Console.WriteLine(e);
-                   throw new Exception("An error is exist");
-               }
-
-
-           });
-            app.MapGet("/product/length", (FsDB db) =>
+            app.MapGet("/products", ( [FromQuery(Name = "offset")] int offset, [FromQuery(Name = "limit")] int limit, FsDB db ) =>
             {
-                int _productLength = ProductRepository.NumberOfProduct(db);
-                return Results.Ok(_productLength);
+                try
+                {
+                    List<Product> _products = ProductRepository.ProductList(db, offset, limit);
+                    if (_products is null) Results.NotFound();
+
+                    return Results.Ok(_products);
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                    throw new Exception("An error is exist");
+                }
+
+
             });
-            app.MapGet("/products/{id}", (int id, FsDB db) =>
+            app.MapGet("/product/length", ( FsDB db ) =>
+            {
+                try
+                {
+                    int _productLength = ProductRepository.NumberOfProduct(db);
+                    return Results.Ok(_productLength);
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                    throw new Exception("An error is exist");
+                }
+            });
+            app.MapGet("/products/{id}", ( int id, FsDB db ) =>
             {
                 try
                 {
@@ -50,7 +58,9 @@ namespace backend.Controller
                 }
             });
 
-            app.MapPost("/products", async (Product product, FsDB db) =>
+            app.MapPost("/products",
+            [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "admin")]
+            async ( Product product, FsDB db ) =>
             {
                 try
                 {
@@ -67,7 +77,9 @@ namespace backend.Controller
                 }
 
             });
-            app.MapDelete("/products/{id}", async (int id, FsDB db) =>
+            app.MapDelete("/products/{id}",
+            [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "admin")]
+            async ( int id, FsDB db ) =>
             {
                 if (await db.products.FindAsync(id) is Product product)
                 {
@@ -81,7 +93,9 @@ namespace backend.Controller
 
                 return Results.NotFound();
             });
-            app.MapPut("/products/{id}", async (int id, Product inputProduct, FsDB db) =>
+            app.MapPut("/products/{id}",
+            [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "admin")]
+            async ( int id, Product inputProduct, FsDB db ) =>
             {
                 var product = await db.products.FindAsync(id);
 
